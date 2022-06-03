@@ -19,15 +19,15 @@ public class RegisterConnector {
 
     @After("execution(* icu.weboys.dacf.core.inter.IModule.init(..) )")
     public void register(JoinPoint joinPoint) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
-        ModuleInfo moduleInfo = (ModuleInfo) joinPoint.getArgs()[0];
+        ModuleInfo moduleInfo = ObjectContainer.getModuleInfo(joinPoint.getArgs()[0].toString()) ;
         // 创建连接器
         String packageName = ObjectContainer.getConnectorClass().get(moduleInfo.getConnectorName());
         Assert.notNull(packageName,String.format("Connector object named %s not found",moduleInfo.getConnectorName()));
         Class cz = Class.forName(packageName);
         Constructor constructor = cz.getConstructor();
         IConnector ico = (IConnector) constructor.newInstance(null);
-        Method ms = cz.getDeclaredMethod("init",ModuleInfo.class);
+        Method ms = cz.getDeclaredMethod("init",String.class);
         moduleInfo.setModuleConnector(ico);
-        ms.invoke(ico,moduleInfo);
+        ms.invoke(ico,moduleInfo.getName());
     }
 }

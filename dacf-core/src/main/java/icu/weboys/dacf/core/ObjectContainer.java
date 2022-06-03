@@ -3,6 +3,7 @@ package icu.weboys.dacf.core;
 import icu.weboys.dacf.core.info.ModuleInfo;
 import icu.weboys.dacf.core.inter.IModule;
 import icu.weboys.dacf.core.util.Assert;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,7 +12,7 @@ public class ObjectContainer {
     private static Map<String,String> MODULE_CLASS = new ConcurrentHashMap<>();
     private static Map<String,String> CONNECTOR_CLASS = new ConcurrentHashMap<>();
     private static Map<String, ModuleInfo> REG_MODULE_INFO = new ConcurrentHashMap<>();
-    private static Map<String, ModuleInfo> REG_REMOTE_MODULE_INFO = new ConcurrentHashMap<>();
+    private static Map<String, String> REG_REMOTE_MODULE_INFO = new ConcurrentHashMap<>();
 
     public static void add(String packageName,Integer t){
         String[] name = packageName.replace(".",",").split(",");
@@ -34,17 +35,17 @@ public class ObjectContainer {
         return REG_MODULE_INFO;
     }
 
-    public static Map<String, ModuleInfo> getRegRemoteModuleInfo() {
+    public static Map<String, String> getRegRemoteModuleInfo() {
         return REG_REMOTE_MODULE_INFO;
     }
 
     public static void add(String moduleName, ModuleInfo moduleInfo){
         REG_MODULE_INFO.put(moduleName,moduleInfo);
-        ObjectContainer.addRemote(String.format("%s:%s",moduleInfo.getHost(),moduleInfo.getPort()),moduleInfo);
+        ObjectContainer.addRemote(String.format("%s:%s",moduleInfo.getHost(),moduleInfo.getPort()),moduleInfo.getName());
     }
 
-    public static void addRemote(String remoteAddr,ModuleInfo moduleInfo){
-        REG_REMOTE_MODULE_INFO.put(remoteAddr,moduleInfo);
+    public static void addRemote(String remoteAddr,String name){
+        REG_REMOTE_MODULE_INFO.put(remoteAddr,name);
     }
 
     public static ModuleInfo get(String moduleName){
@@ -68,5 +69,11 @@ public class ObjectContainer {
         Assert.notNull(ime,"Module does not register entity object");
         return ime;
     }
+
+    public static ModuleInfo getRemoteModuleInfo(String remote){
+        return REG_MODULE_INFO.get(REG_REMOTE_MODULE_INFO.get(remote));
+    }
+
+
 
 }

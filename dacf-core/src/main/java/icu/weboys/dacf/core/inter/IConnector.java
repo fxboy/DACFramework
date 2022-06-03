@@ -4,7 +4,7 @@ package icu.weboys.dacf.core.inter;
 import icu.weboys.dacf.core.info.ModuleInfo;
 
 public interface IConnector<T> {
-    void init(ModuleInfo info);
+    void init(String name);
     void connect();
     void reconnect();
     void send(T data);

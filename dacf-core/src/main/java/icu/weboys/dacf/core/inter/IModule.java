@@ -4,7 +4,7 @@ import icu.weboys.dacf.core.info.ModuleInfo;
 import icu.weboys.dacf.core.info.DataInfo;
 
 public interface IModule<T> {
-    void init(ModuleInfo moduleInfo);
+    void init(String name);
     void recv(T data);
     void save(DataInfo dataInfo);
 }

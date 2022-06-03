@@ -4,7 +4,9 @@ import icu.weboys.dacf.core.ObjectContainer;
 import icu.weboys.dacf.core.RegObject;
 import icu.weboys.dacf.core.ThreadContainer;
 import icu.weboys.dacf.core.info.ModuleInfo;
+import icu.weboys.dacf.core.inter.IConnector;
 import icu.weboys.dacf.core.inter.IModule;
+import icu.weboys.dacf.core.util.BaseUtils;
 import icu.weboys.dacf.services.config.DACFConfig;
 import icu.weboys.dacf.services.init.DACFServiceInit;
 import icu.weboys.dacf.services.socket.SocketHandler;
@@ -29,12 +31,14 @@ import java.util.concurrent.TimeUnit;
 @Log4j2
 public class DACFService {
     public static void init(ApplicationContext applicationContext){
-        ((DACFServiceInit) applicationContext.getBean("DACFServiceInit")).init(applicationContext);
+        RegObject.temp_applicationContext = applicationContext;
+        DACFServiceInit dint = ((DACFServiceInit) applicationContext.getBean("DACFServiceInit"));
+        dint.init(applicationContext);
         Map<String, ModuleInfo> modules = ObjectContainer.getRegModuleInfo();
         Integer moduleNumber = modules.size() == 0?null:modules.size();
         Assert.notNull(moduleNumber,String.format("No modules to register"));
         ThreadContainer.connectotThreadPool = new ThreadPoolExecutor(moduleNumber,
-                moduleNumber * 2 + 1,
+                dint.getMaximumPoolSize()+ 1,
                 60 * 3,
                 TimeUnit.SECONDS,
                 new LinkedBlockingDeque<>(100000),
@@ -44,13 +48,7 @@ public class DACFService {
         socketmessageBus(applicationContext);
         modules.forEach( (k,v) -> {
             try {
-                String beanName = "module_" + v.getName();
-                String packageName = ObjectContainer.getModuleClass().get(v.getClassName());
-                Assert.notNull(packageName,String.format("Module object named %s not found",v.getClassName()));
-                Class cz = Class.forName(packageName);
-                RegObject.createBean(applicationContext,beanName,cz);
-                v.setModuleObject((IModule) applicationContext.getBean(beanName));
-                v.getModuleObject().init(v);
+              RegObject.regModule(v);
             } catch (ClassNotFoundException e) {
                 log.info(String.format("[%s] Module creation failed,exception message: %s",v.getName(),e.getMessage()));
             }
@@ -75,8 +73,19 @@ public class DACFService {
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel sh){
-                                sh.pipeline().addLast(new SocketHandler());
-                                log.info(String.format("Socket server has added a new connection,Company Registered Address %s",sh.remoteAddress()));
+                               try{
+                                   String remoteName = BaseUtils.getRemoteName(sh.remoteAddress().toString());
+                                   ModuleInfo mdi = ObjectContainer.getRemoteModuleInfo(remoteName);
+                                   Assert.notNull(mdi,String.format("Corresponding module information not found,RemoteName %s",remoteName));
+                                   IConnector obj = mdi.getModuleConnector();
+                                   Assert.notNull(obj,String.format("[%s] The current module information does not contain entity objects %s",mdi.getName(),mdi.getClassName()));
+                                   sh.pipeline().addLast(new SocketHandler());
+                                   obj.connect();
+                               }catch (Exception ex){
+                                   log.debug(String.format("%s not registered",sh.remoteAddress()));
+                                   log.debug(String.format("Socket server has added a new connection,Company Registered Address %s ,But not registered,ex %s",sh.remoteAddress(),ex.getMessage()));
+                               }
+                                //log.info(String.format("Socket server has added a new connection,Company Registered Address %s",sh.remoteAddress()));
                             }
                         });
                 ChannelFuture future  = sb.bind(port).sync();

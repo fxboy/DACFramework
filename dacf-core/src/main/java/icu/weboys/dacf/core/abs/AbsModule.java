@@ -1,5 +1,6 @@
 package icu.weboys.dacf.core.abs;
 
+import icu.weboys.dacf.core.ObjectContainer;
 import icu.weboys.dacf.core.info.DataInfo;
 import icu.weboys.dacf.core.info.ModuleInfo;
 import icu.weboys.dacf.core.inter.IModule;
@@ -10,21 +11,22 @@ import javax.annotation.Resource;
 
 @Log4j2
 public abstract class AbsModule<T> implements IModule<T> {
-    protected ModuleInfo moduleInfo;
 
     @Resource
     DataSave dataSave;
+    
+    protected String name;
 
     @Override
-    public void init(ModuleInfo moduleInfo) {
-        this.moduleInfo = moduleInfo;
-        log.info(String.format("[%s] Module created",this.moduleInfo.getName()));
+    public void init(String name) {
+        this.name = name;
+        log.info(String.format("[%s] Module created",this.name));
     }
 
     @Override
     public void save(DataInfo dataInfo) {
         // Cut to other modules for processing
-        this.dataSave.save(this.moduleInfo,dataInfo);
+        this.dataSave.save( ObjectContainer.get(this.name),dataInfo);
     }
 
 }

@@ -1,5 +1,6 @@
 package icu.weboys.dacf.connect.socket;
 
+import icu.weboys.dacf.core.ObjectContainer;
 import icu.weboys.dacf.core.abs.AbsConnector;
 import icu.weboys.dacf.core.annotation.DACFConnector;
 import icu.weboys.dacf.core.ThreadContainer;
@@ -27,8 +28,8 @@ public class NettyClientConnector extends AbsConnector<byte[]> {
     Bootstrap client;
 
     @Override
-    public void init(ModuleInfo info) {
-        super.init(info);
+    public void init(String name) {
+        super.init(name);
         client = new Bootstrap();
         group =  new NioEventLoopGroup();
         client.group(group );
@@ -55,29 +56,29 @@ public class NettyClientConnector extends AbsConnector<byte[]> {
             }
         });
 
-        if(info.getEnable()){
+        if(ObjectContainer.get(this.name).getEnable()){
             this.connect();
             return;
         }
-        log.info(String.format("[%s] Module not enabled, connector skipped",this.moduleInfo.getName()));
+        log.info(String.format("[%s] Module not enabled, connector skipped",this.name));
     }
 
     @Override
     public void connect() {
         try{
-            future = client.connect(this.moduleInfo.getHost(), this.moduleInfo.getPort()).sync();
+            future = client.connect( ObjectContainer.get(this.name).getHost(),  ObjectContainer.get(this.name).getPort()).sync();
         }catch (Exception ex){
             future = null;
-            log.debug(String.format("[%s] future client creat ExceptionMessage:%s",this.moduleInfo.getName(),ex.getMessage()));
+            log.debug(String.format("[%s] future client creat ExceptionMessage:%s", ObjectContainer.get(this.name).getName(),ex.getMessage()));
         }
-        Assert.notNull(future,String.format("[%s] Connection failed, waiting for the timer to reconnect",this.moduleInfo.getName()));
-        super.remoteReg(future.channel().remoteAddress().toString());
+        Assert.notNull(future,String.format("[%s] Connection failed, waiting for the timer to reconnect", ObjectContainer.get(this.name).getName()));
+        super.connect();
         ThreadContainer.connectorExecute(new Thread(() -> {
             try {
                 future.channel().closeFuture().sync();
                 super.connect();
             } catch (InterruptedException ex) {
-                log.debug(String.format("[%s] future client start ExceptionMessage:%s",this.moduleInfo.getName(),ex.getMessage()));
+                log.debug(String.format("[%s] future client start ExceptionMessage:%s", ObjectContainer.get(this.name).getName(),ex.getMessage()));
                 connectFlag = false;
             }
         }));

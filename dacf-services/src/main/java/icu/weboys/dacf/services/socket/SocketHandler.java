@@ -4,6 +4,7 @@ import icu.weboys.dacf.core.ObjectContainer;
 import icu.weboys.dacf.core.info.ModuleInfo;
 import icu.weboys.dacf.core.inter.IConnector;
 import icu.weboys.dacf.core.inter.IModule;
+import icu.weboys.dacf.core.util.BaseUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,8 +15,8 @@ public class SocketHandler extends SimpleChannelInboundHandler<byte[]> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, byte[] bytes) throws Exception {
-        String remoteName = getName(channelHandlerContext);
-        ModuleInfo mdi = ObjectContainer.getRegRemoteModuleInfo().get(remoteName);
+        String remoteName = BaseUtils.getRemoteName(channelHandlerContext);
+        ModuleInfo mdi = ObjectContainer.getRemoteModuleInfo(remoteName);
         Assert.notNull(mdi,String.format("Corresponding module information not found,RemoteName %s",remoteName));
         IModule obj = mdi.getModuleObject();
         Assert.notNull(obj,String.format("[%s] The current module information does not contain entity objects %s",mdi.getName(),mdi.getClassName()));
@@ -23,7 +24,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<byte[]> {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg){
+    public void channelRead(ChannelHandlerContext channelHandlerContext, Object msg){
         if (!(msg instanceof ByteBuf)) {
            return;
         }
@@ -31,8 +32,8 @@ public class SocketHandler extends SimpleChannelInboundHandler<byte[]> {
         byte[] bytes = new byte[buf.readableBytes()];
         buf.getBytes(0,bytes);
         buf.release();
-        String remoteName = getName(ctx);
-        ModuleInfo mdi = ObjectContainer.getRegRemoteModuleInfo().get(remoteName);
+        String remoteName = BaseUtils.getRemoteName(channelHandlerContext);
+        ModuleInfo mdi = ObjectContainer.getRemoteModuleInfo(remoteName);
         Assert.notNull(mdi,String.format("Corresponding module information not found,RemoteName %s",remoteName));
         IModule obj = mdi.getModuleObject();
         Assert.notNull(obj,String.format("[%s] The current module information does not contain entity objects %s",mdi.getName(),mdi.getClassName()));
@@ -40,19 +41,16 @@ public class SocketHandler extends SimpleChannelInboundHandler<byte[]> {
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        String remoteName = getName(ctx);
-        ModuleInfo mdi = ObjectContainer.getRegRemoteModuleInfo().get(remoteName);
+    public void channelInactive(ChannelHandlerContext channelHandlerContext) throws Exception {
+        String remoteName = BaseUtils.getRemoteName(channelHandlerContext);
+        ModuleInfo mdi = ObjectContainer.getRemoteModuleInfo(remoteName);
         Assert.notNull(mdi,String.format("Corresponding module information not found,RemoteName %s",remoteName));
         IConnector obj = mdi.getModuleConnector();
         Assert.notNull(obj,String.format("[%s] The current module information does not contain entity objects %s",mdi.getName(),mdi.getClassName()));
         obj.close();
-        super.channelInactive(ctx);
+        super.channelInactive(channelHandlerContext);
     }
 
 
-    public String getName(ChannelHandlerContext ctx){
-        String[] sn = ctx.channel().remoteAddress().toString().split("/");
-        return sn.length > 1?sn[1]:sn[0];
-    }
+
 }

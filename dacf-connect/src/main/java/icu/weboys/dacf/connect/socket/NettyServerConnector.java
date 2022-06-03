@@ -7,7 +7,7 @@ import icu.weboys.dacf.core.info.ModuleInfo;
 @DACFConnector
 public class NettyServerConnector extends AbsConnector<byte[]> {
     @Override
-    public void init(ModuleInfo info) {
-        super.init(info);
+    public void init(String name) {
+        super.init(name);
     }
 }

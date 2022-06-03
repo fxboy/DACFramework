@@ -14,8 +14,10 @@ import javax.websocket.server.PathParam;
 public class ResultCtrl {
     @Resource
     CacheData cacheData;
+
+    @RequestMapping("/modules")
     public Object getModules(){
-        return null;
+        return cacheData.get();
     }
 
     public Object getModulesAllResult(){
@@ -25,5 +27,15 @@ public class ResultCtrl {
     @RequestMapping("/result/{module}")
     public Object getModuleResult(@PathVariable("module") String module){
         return cacheData.get(module);
+    }
+
+    @RequestMapping("/result/his/{module}")
+    public Object getModuleHisResult(@PathVariable("module") String module){
+        return cacheData.getHis(module);
+    }
+
+    @RequestMapping("/result/his")
+    public Object getModuleHisResult(){
+        return cacheData.getHis();
     }
 }
