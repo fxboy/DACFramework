@@ -3,8 +3,8 @@ package icu.weboys.dacf.services;
 import icu.weboys.dacf.core.ObjectContainer;
 import icu.weboys.dacf.core.RegObject;
 import icu.weboys.dacf.core.ThreadContainer;
-import icu.weboys.dacf.info.ModuleInfo;
-import icu.weboys.dacf.inter.IModule;
+import icu.weboys.dacf.core.info.ModuleInfo;
+import icu.weboys.dacf.core.inter.IModule;
 import icu.weboys.dacf.services.config.DACFConfig;
 import icu.weboys.dacf.services.init.DACFServiceInit;
 import icu.weboys.dacf.services.socket.SocketHandler;
@@ -18,7 +18,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.Assert;
+import icu.weboys.dacf.core.util.Assert;
 
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -45,8 +45,8 @@ public class DACFService {
         modules.forEach( (k,v) -> {
             try {
                 String beanName = "module_" + v.getName();
-                String packageName = ObjectContainer.getModuleClass().get(v.getModuleName());
-                Assert.notNull(packageName,String.format("Module object named %s not found",v.getModuleName()));
+                String packageName = ObjectContainer.getModuleClass().get(v.getClassName());
+                Assert.notNull(packageName,String.format("Module object named %s not found",v.getClassName()));
                 Class cz = Class.forName(packageName);
                 RegObject.createBean(applicationContext,beanName,cz);
                 v.setModuleObject((IModule) applicationContext.getBean(beanName));

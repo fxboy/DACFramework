@@ -1,4 +1,4 @@
-package icu.weboys.dacf.annotation;
+package icu.weboys.dacf.core.annotation;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;

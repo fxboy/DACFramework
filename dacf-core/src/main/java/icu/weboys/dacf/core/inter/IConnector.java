@@ -1,7 +1,7 @@
-package icu.weboys.dacf.inter;
+package icu.weboys.dacf.core.inter;
 
 
-import icu.weboys.dacf.info.ModuleInfo;
+import icu.weboys.dacf.core.info.ModuleInfo;
 
 public interface IConnector<T> {
     void init(ModuleInfo info);

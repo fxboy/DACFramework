@@ -19,7 +19,6 @@
         <module>dacf-api</module>
         <module>dacf-web</module>
         <module>dacf-connect</module>
-        <module>dacf-dbs</module>
         <module>dacf-test</module>
     </modules>
 

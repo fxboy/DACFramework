@@ -16,4 +16,13 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
+
+    <dependencies>
+        <dependency>
+            <groupId>icu.weboys</groupId>
+            <artifactId>dacf-core</artifactId>
+            <version>${dacfversion}</version>
+        </dependency>
+    </dependencies>
+
 </project>

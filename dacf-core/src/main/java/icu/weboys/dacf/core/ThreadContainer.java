@@ -1,6 +1,6 @@
 package icu.weboys.dacf.core;
 
-import org.springframework.util.Assert;
+import icu.weboys.dacf.core.util.Assert;
 
 import java.util.concurrent.ExecutorService;
 

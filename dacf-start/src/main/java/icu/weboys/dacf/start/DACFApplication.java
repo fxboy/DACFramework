@@ -1,11 +1,10 @@
 package icu.weboys.dacf.start;
 
 
-import icu.weboys.dacf.annotation.DACFComponentScan;
-import icu.weboys.dacf.annotation.DACFConnector;
-import icu.weboys.dacf.annotation.DACFModule;
+import icu.weboys.dacf.core.annotation.DACFComponentScan;
+import icu.weboys.dacf.core.annotation.DACFConnector;
+import icu.weboys.dacf.core.annotation.DACFModule;
 import icu.weboys.dacf.core.ObjectContainer;
-import icu.weboys.dacf.core.ThreadContainer;
 import icu.weboys.dacf.services.DACFService;
 import org.reflections.Reflections;
 import org.springframework.boot.SpringApplication;
@@ -35,10 +34,6 @@ public class DACFApplication extends SpringApplication {
         Set<Class<?>> connectorList = reflections.getTypesAnnotatedWith(DACFConnector.class);
         moduleList.forEach(clazz -> ObjectContainer.add(clazz.getName(),1));
         connectorList.forEach(clazz -> ObjectContainer.add(clazz.getName(),2));
-
-        // 加载用户模块列表，并存入 REG MODULS中
-        // ...... 待写入
-
         DACFService.init(applicationContext);
         return (ConfigurableApplicationContext) applicationContext;
     }

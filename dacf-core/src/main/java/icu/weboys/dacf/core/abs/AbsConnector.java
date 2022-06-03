@@ -1,9 +1,9 @@
-package icu.weboys.dacf.abs;
+package icu.weboys.dacf.core.abs;
 
 
 import icu.weboys.dacf.core.ObjectContainer;
-import icu.weboys.dacf.info.ModuleInfo;
-import icu.weboys.dacf.inter.IConnector;
+import icu.weboys.dacf.core.info.ModuleInfo;
+import icu.weboys.dacf.core.inter.IConnector;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2

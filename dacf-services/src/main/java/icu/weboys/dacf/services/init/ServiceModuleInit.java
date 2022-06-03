@@ -1,8 +1,7 @@
 package icu.weboys.dacf.services.init;
 
 import icu.weboys.dacf.core.ObjectContainer;
-import icu.weboys.dacf.info.ModuleInfo;
-import org.aspectj.lang.annotation.After;
+import icu.weboys.dacf.core.info.ModuleInfo;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
