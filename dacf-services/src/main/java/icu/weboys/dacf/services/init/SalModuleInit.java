@@ -18,6 +18,7 @@ public class SalModuleInit implements IModuleInitHandler {
 
     @Override
     public void init() {
+        if(path == null) return;
         File file = new File(path);
         try {
             if(file.exists()){

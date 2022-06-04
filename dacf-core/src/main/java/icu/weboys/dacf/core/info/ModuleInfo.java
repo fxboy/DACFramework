@@ -25,7 +25,7 @@ public class ModuleInfo {
     private IModule moduleObject;
     private IConnector moduleConnector;
 
-    public ModuleInfo(String name, Boolean enable, String flag, String host, Integer port, String className, String connectorName) {
+    public ModuleInfo(String name, Boolean enable, String flag, String host, Integer port, String className, String connectorName,String local,String tag,String category) {
         this.name = name;
         this.enable = enable;
         this.flag = flag;
@@ -33,6 +33,9 @@ public class ModuleInfo {
         this.port = port;
         this.className = className;
         this.connectorName = connectorName;
+        this.local = local;
+        this.tag = tag;
+        this.category = category;
     }
 
     public ModuleInfo() {

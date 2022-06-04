@@ -30,6 +30,24 @@
         </dependency>
 
         <dependency>
+            <groupId>icu.weboys</groupId>
+            <artifactId>dacf-connect</artifactId>
+            <version>${dacfversion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.weboys</groupId>
+            <artifactId>dacf-api</artifactId>
+            <version>${dacfversion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>icu.weboys</groupId>
+            <artifactId>dacf-toolkit</artifactId>
+            <version>${dacfversion}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.10</version>

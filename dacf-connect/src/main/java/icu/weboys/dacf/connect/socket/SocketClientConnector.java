@@ -4,7 +4,6 @@ import icu.weboys.dacf.core.ObjectContainer;
 import icu.weboys.dacf.core.abs.AbsConnector;
 import icu.weboys.dacf.core.annotation.DACFConnector;
 import icu.weboys.dacf.core.ThreadContainer;
-import icu.weboys.dacf.core.info.ModuleInfo;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
@@ -21,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 @Log4j2
 @DACFConnector
-public class NettyClientConnector extends AbsConnector<byte[]> {
+public class SocketClientConnector extends AbsConnector<byte[]> {
     Thread that;
     ChannelFuture future;
     EventLoopGroup group = null;

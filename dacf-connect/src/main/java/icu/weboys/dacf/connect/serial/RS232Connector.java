@@ -7,6 +7,7 @@ import icu.weboys.dacf.core.ObjectContainer;
 import icu.weboys.dacf.core.abs.AbsConnector;
 import icu.weboys.dacf.core.annotation.DACFConnector;
 import icu.weboys.dacf.core.info.ModuleInfo;
+import icu.weboys.dacf.core.util.BaseUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.web.server.PortInUseException;
 
@@ -24,11 +25,11 @@ public class RS232Connector extends AbsConnector<byte[]>{
     public void init(String name) {
         super.init(name);
         ModuleInfo mdi = ObjectContainer.get(name);
-        this.comName = mdi.getParams().get("comName").toString();
-        this.baudrate = (Integer)mdi.getParams().get("baudrate");
-        this.databits = (Integer)mdi.getParams().get("databits");
-        this.  parity = (Integer)mdi.getParams().get("parity")  ;
-        this.stopbits = (Integer)mdi.getParams().get("stopbits");
+        this.comName  = BaseUtils.getMapValue(mdi.getParams(),"comName","COM1");
+        this.baudrate = BaseUtils.getMapValue(mdi.getParams(),"baudrate", 9600);
+        this.databits = BaseUtils.getMapValue(mdi.getParams(),"databits",    8);
+        this.  parity = BaseUtils.getMapValue(mdi.getParams(),"parity",      0);
+        this.stopbits = BaseUtils.getMapValue(mdi.getParams(),"stopbits",    1);
         if(ObjectContainer.get(this.name).getEnable()){
             this.connect();
             return;

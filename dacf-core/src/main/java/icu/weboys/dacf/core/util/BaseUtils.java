@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 public class BaseUtils {
     public static String getRemoteName(ChannelHandlerContext channelHandlerContext){
@@ -41,5 +42,15 @@ public class BaseUtils {
         } catch (UnknownHostException e) {
             return "127.0.0.1";
         }
+    }
+
+
+    public static <T> T getMapValue(Map val, String key, T def){
+        return getNotNullValue(val.get(key),def);
+    }
+
+    public static <T> T getNotNullValue(Object val,T def){
+        if(val == null) return def;
+        return (T) val;
     }
 }
