@@ -5,9 +5,8 @@ import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
 
-// 连接器
-@Target({ElementType.TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DACFConnector {
+public @interface ModuleInitialization {
 }

@@ -4,11 +4,10 @@ import icu.weboys.dacf.core.ObjectContainer;
 import icu.weboys.dacf.core.RegObject;
 import icu.weboys.dacf.core.ThreadContainer;
 import icu.weboys.dacf.core.info.ModuleInfo;
+import icu.weboys.dacf.core.init.DACFModuleInit;
 import icu.weboys.dacf.core.inter.IConnector;
-import icu.weboys.dacf.core.inter.IModule;
 import icu.weboys.dacf.core.util.BaseUtils;
 import icu.weboys.dacf.services.config.DACFConfig;
-import icu.weboys.dacf.services.init.DACFServiceInit;
 import icu.weboys.dacf.services.socket.SocketHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -31,8 +30,10 @@ import java.util.concurrent.TimeUnit;
 @Log4j2
 public class DACFService {
     public static void init(ApplicationContext applicationContext){
+        String devip = BaseUtils.getLocalV4IP();
+        log.info(String.format("Local IPv4 address %s",devip));
         RegObject.temp_applicationContext = applicationContext;
-        DACFServiceInit dint = ((DACFServiceInit) applicationContext.getBean("DACFServiceInit"));
+        DACFModuleInit dint = ((DACFModuleInit) applicationContext.getBean("DACFModuleInit"));
         dint.init(applicationContext);
         Map<String, ModuleInfo> modules = ObjectContainer.getRegModuleInfo();
         Integer moduleNumber = modules.size() == 0?null:modules.size();
@@ -48,7 +49,9 @@ public class DACFService {
         socketmessageBus(applicationContext);
         modules.forEach( (k,v) -> {
             try {
-              RegObject.regModule(v);
+              if(v.getLocal() != null && v.getLocal().equals(devip)){
+                  RegObject.regModule(v);
+              }
             } catch (ClassNotFoundException e) {
                 log.info(String.format("[%s] Module creation failed,exception message: %s",v.getName(),e.getMessage()));
             }

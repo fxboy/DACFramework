@@ -1,10 +1,18 @@
 package icu.weboys.dacf.core;
 
+import icu.weboys.dacf.core.info.DataInfo;
 import icu.weboys.dacf.core.info.ModuleInfo;
+import icu.weboys.dacf.core.inter.IConnector;
 import icu.weboys.dacf.core.inter.IModule;
+import icu.weboys.dacf.core.inter.IModuleInitHandler;
 import icu.weboys.dacf.core.util.Assert;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,6 +21,9 @@ public class ObjectContainer {
     private static Map<String,String> CONNECTOR_CLASS = new ConcurrentHashMap<>();
     private static Map<String, ModuleInfo> REG_MODULE_INFO = new ConcurrentHashMap<>();
     private static Map<String, String> REG_REMOTE_MODULE_INFO = new ConcurrentHashMap<>();
+    private static Map<String,Object> MODULE_INIT_HANDLERS = new ConcurrentHashMap<>();
+    private static Map<String,Object> DATA_INIT_HANDLERS = new ConcurrentHashMap<>();
+
 
     public static void add(String packageName,Integer t){
         String[] name = packageName.replace(".",",").split(",");
@@ -72,6 +83,34 @@ public class ObjectContainer {
 
     public static ModuleInfo getRemoteModuleInfo(String remote){
         return REG_MODULE_INFO.get(REG_REMOTE_MODULE_INFO.get(remote));
+    }
+
+    public static void moduleHandlerInit(){
+        MODULE_INIT_HANDLERS.keySet().forEach(i-> {
+            try{
+                RegObject.regModuleInitHandler("mhd",i);
+            }catch (Exception e){
+                return;
+            }
+        });
+    }
+
+    public static void putModuleHandlerInit(String handler){
+        MODULE_INIT_HANDLERS.put(handler,new Object());
+    }
+
+    public static void dataHandlerInit(ModuleInfo mi, DataInfo di){
+        DATA_INIT_HANDLERS.keySet().forEach(i-> {
+            try{
+                RegObject.regDataInitHandler("mdt",i,mi,di);
+            }catch (Exception e){
+                return;
+            }
+        });
+    }
+
+    public static void putDataHandlerInit(String handler){
+        DATA_INIT_HANDLERS.put(handler,new Object());
     }
 
 

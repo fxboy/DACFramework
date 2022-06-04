@@ -2,26 +2,22 @@ package icu.weboys.dacf.services.init;
 
 import com.alibaba.fastjson2.JSON;
 import icu.weboys.dacf.core.ObjectContainer;
+import icu.weboys.dacf.core.annotation.ModuleInitialization;
 import icu.weboys.dacf.core.info.ModuleInfo;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import icu.weboys.dacf.core.inter.IModuleInitHandler;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.List;
 import java.util.Scanner;
 
-@Component
-@Aspect
-public class ServiceModuleInit {
+@ModuleInitialization
+public class SalModuleInit implements IModuleInitHandler {
     @Value("${dacf.services.modulesPath}")
     String path;
-    @Before("execution(* icu.weboys.dacf.services.init.DACFServiceInit.init(..) )")
-    public void init(){
+
+    @Override
+    public void init() {
         File file = new File(path);
         try {
             if(file.exists()){
@@ -31,12 +27,11 @@ public class ServiceModuleInit {
                 sc.close();
                 if(set.trim().length() > 0){
                     List<ModuleInfo> l = JSON.parseArray(set,ModuleInfo.class);
-                    l.forEach(k->ObjectContainer.add(k.getName(),k));
+                    l.forEach(k-> ObjectContainer.add(k.getName(),k));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

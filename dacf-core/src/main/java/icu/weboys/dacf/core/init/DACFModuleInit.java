@@ -1,4 +1,4 @@
-package icu.weboys.dacf.services.init;
+package icu.weboys.dacf.core.init;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Primary
-public class DACFServiceInit {
+public class DACFModuleInit {
     @Getter
     @Setter
     @Value("${dacf.services.maximumPoolSize}")

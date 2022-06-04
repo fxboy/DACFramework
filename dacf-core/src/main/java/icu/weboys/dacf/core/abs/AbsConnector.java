@@ -27,6 +27,7 @@ public abstract class AbsConnector<T> implements IConnector<T> {
     @Override
     public void reconnect() {
         this.connectFlag = false;
+        this.close();
          ObjectContainer.get(this.name).setConnectFlag(false);
         log.info(String.format("[%s] Connection reconnected", this.name));
         this.connect();

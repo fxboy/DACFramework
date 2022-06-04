@@ -1,4 +1,4 @@
-package icu.weboys.dacf.core.save;
+package icu.weboys.dacf.core.init;
 
 import icu.weboys.dacf.core.info.DataInfo;
 import icu.weboys.dacf.core.info.ModuleInfo;

@@ -15,6 +15,9 @@ public class ModuleInfo {
     private String flag;
     private String host;
     private Integer port;
+    private String local;
+    private String tag;
+    private String category;
     private Map<String,Object> params;
     private String className;
     private String connectorName;
